@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import useKey from "use-key-hook";
 import upcar from "./carro.png";
@@ -6,7 +6,7 @@ import cenario from "./cenario.gif";
 import { Theme } from "./theme";
 
 export interface IUpcar {
-  lane: "left" | "middle" | "right";
+  lane: string;
 }
 
 const Background = styled.div`
@@ -14,6 +14,18 @@ const Background = styled.div`
   height: 100vh;
   background: url(${cenario}) center no-repeat;
   background-size: cover;
+`;
+
+const Paused = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background: purple;
+  color: white;
+  text-align: center;
+  font-size: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Upcar = styled.div<IUpcar>`
@@ -28,19 +40,56 @@ const Upcar = styled.div<IUpcar>`
 `;
 
 function App() {
-  useKey(
-    (pressedKey: any) => {
-      console.log("Detected Key press", pressedKey);
-    },
-    {
-      detectKeys: ["a", "s", "d", 27, 53]
+  const [lane, setLane] = useState<string>("middle");
+  const [paused, setPaused] = useState<boolean>(false);
+  const savedLane = useRef(lane);
+  const savedPaused = useRef(paused);
+
+  useEffect(() => {
+    savedLane.current = lane;
+  }, [lane]);
+
+  useEffect(() => {
+    savedPaused.current = paused;
+  }, [paused]);
+
+  useKey((pressedKey: number) => {
+    switch (pressedKey) {
+      case 27:
+        setPaused(!savedPaused.current);
+        break;
+      case 37:
+        if (savedLane.current === "left") return;
+        !savedPaused.current &&
+          setLane(savedLane.current === "middle" ? "left" : "middle");
+        break;
+      case 39:
+        if (savedLane.current === "right") return;
+        !savedPaused.current &&
+          setLane(savedLane.current === "middle" ? "right" : "middle");
+        break;
+      case 97:
+        !savedPaused.current && setLane("left");
+        break;
+      case 100:
+        !savedPaused.current && setLane("right");
+        break;
+      case 115:
+        !savedPaused.current && setLane("middle");
+        break;
+
+      default:
+        break;
     }
-  );
+  });
   return (
     <ThemeProvider theme={Theme}>
-      <Background>
-        <Upcar lane="middle"></Upcar>
-      </Background>
+      {paused && <Paused>Jogo pausado!</Paused>}
+      {!paused && (
+        <Background>
+          <Upcar lane={lane}></Upcar>
+        </Background>
+      )}
     </ThemeProvider>
   );
 }
