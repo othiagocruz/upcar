@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { ThemeProvider } from "styled-components";
+import useKey from "use-key-hook";
 import upcar from "./carro.png";
 import cenario from "./cenario.gif";
 import { Theme } from "./theme";
@@ -27,6 +28,14 @@ const Upcar = styled.div<IUpcar>`
 `;
 
 function App() {
+  useKey(
+    (pressedKey: any) => {
+      console.log("Detected Key press", pressedKey);
+    },
+    {
+      detectKeys: ["a", "s", "d", 27, 53]
+    }
+  );
   return (
     <ThemeProvider theme={Theme}>
       <Background>
