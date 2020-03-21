@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 export const useInterval = (
   callback: () => void,
   delay: number,
-  ...rest: any
+  starting: boolean
 ) => {
   const savedCallback = useRef(callback);
 
@@ -19,5 +19,5 @@ export const useInterval = (
       let id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay, ...rest]);
+  }, [delay, starting]);
 };

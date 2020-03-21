@@ -15,19 +15,22 @@ const Background = styled.div`
   height: 100vh;
   background: url(${cenario}) center no-repeat;
   background-size: cover;
+  position: absolute;
 `;
 
-const Box = styled.div`
+const Box = styled.div<{ opacity?: string }>`
   width: calc(100vw - 6rem);
   height: calc(100vh - 6rem);
   background: ${props => props.theme.background};
   color: ${props => props.theme.text};
+  opacity: ${props => props.opacity || "1"};
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: space-around;
   align-content: center;
   padding: 3rem;
+  position: absolute;
 `;
 
 const Message = styled.p`
@@ -64,10 +67,13 @@ const Upcar = styled.div<IUpcar>`
 
 function App() {
   const [lane, setLane] = useState<string>("middle");
-  const [paused, setPaused] = useState<boolean>(false);
+  const [paused, setPaused] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
   const [starting, setStarting] = useState<boolean>(false);
-  const [countdown, setCountdown] = useState<number>(4);
+  const [finished, setFinished] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(3);
+  const [racetime, setRacetime] = useState<number>(0);
+  const [laps, setLaps] = useState<number>(0);
 
   const savedLane = useRef(lane);
   const savedPaused = useRef(paused);
@@ -82,17 +88,31 @@ function App() {
 
   useInterval(
     () => {
-      !started && setCountdown(countdown - 1);
-      if (countdown === 0) setStarted(true);
+      starting && setCountdown(countdown - 1);
+      if (countdown < 1) {
+        setStarted(true);
+        setStarting(false);
+        setPaused(false);
+        setCountdown(3);
+      }
+      if (started && !paused) setRacetime(racetime + 1);
     },
-    1000,
-    [starting]
+    1200,
+    starting
   );
+
+  useEffect(() => {
+    if (laps > 7) setFinished(true);
+  }, [laps]);
+
+  useEffect(() => {
+    if (!paused && !finished && racetime % 2 === 1) setLaps(l => l + 1);
+  }, [racetime, paused, finished]);
 
   useKey((pressedKey: number) => {
     switch (pressedKey) {
       case 27:
-        setPaused(!savedPaused.current);
+        setPaused(p => !p);
         break;
       case 37:
         if (savedLane.current === "left") return;
@@ -134,15 +154,21 @@ function App() {
           </Message>
         </Box>
       )}
-      {paused && started && (
+      {started && (
+        <Background>
+          <Message>Voltas: {laps}/8</Message>
+          <Upcar lane={lane}></Upcar>
+        </Background>
+      )}
+      {paused && started && !finished && (
         <Box>
           <Message>Jogo pausado!</Message>
         </Box>
       )}
-      {!paused && started && (
-        <Background>
-          <Upcar lane={lane}></Upcar>
-        </Background>
+      {finished && (
+        <Box opacity="0.7">
+          <Message>Fim de jogo!</Message>
+        </Box>
       )}
     </ThemeProvider>
   );

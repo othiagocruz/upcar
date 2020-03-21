@@ -1,7 +1,7 @@
 import { DefaultTheme } from "styled-components";
 
 const Theme: DefaultTheme = {
-  background: "purple",
+  background: "darkblue",
   text: "white",
   lanes: {
     left: "10%",
