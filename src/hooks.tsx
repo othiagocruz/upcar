@@ -3,7 +3,8 @@ import { useEffect, useRef } from "react";
 export const useInterval = (
   callback: () => void,
   delay: number,
-  starting: boolean
+  starting: boolean,
+  usedTurbo: boolean
 ) => {
   const savedCallback = useRef(callback);
 
@@ -19,5 +20,5 @@ export const useInterval = (
       let id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay, starting]);
+  }, [delay, starting, usedTurbo]);
 };

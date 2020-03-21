@@ -71,12 +71,15 @@ function App() {
   const [started, setStarted] = useState<boolean>(false);
   const [starting, setStarting] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
+  const [usedTurbo, setUsedTurbo] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
   const [racetime, setRacetime] = useState<number>(1);
   const [laps, setLaps] = useState<number>(0);
 
   const savedLane = useRef(lane);
   const savedPaused = useRef(paused);
+  const savedTurbos = useRef(3);
+  const savedTurboActive = useRef(false);
 
   useEffect(() => {
     savedLane.current = lane;
@@ -85,6 +88,14 @@ function App() {
   useEffect(() => {
     savedPaused.current = paused;
   }, [paused]);
+
+  savedTurboActive.current = usedTurbo;
+
+  useEffect(() => {
+    if (usedTurbo) {
+      savedTurbos.current = savedTurbos.current - 1;
+    }
+  }, [usedTurbo]);
 
   useInterval(
     () => {
@@ -97,10 +108,10 @@ function App() {
       }
       if (started && !paused) setRacetime(racetime + 1);
     },
-    1200,
-    starting
+    !usedTurbo ? 1200 : 200,
+    starting,
+    usedTurbo
   );
-
   useEffect(() => {
     if (laps > 7) setFinished(true);
   }, [laps]);
@@ -113,6 +124,16 @@ function App() {
     switch (event.keyCode) {
       case 27:
         setPaused(p => !p);
+        break;
+      case 32:
+        if (
+          savedTurbos.current < 1 ||
+          savedPaused.current ||
+          savedTurboActive.current
+        )
+          return;
+        setUsedTurbo(true);
+        setTimeout(() => setUsedTurbo(false), 3500);
         break;
       case 37:
         if (savedLane.current === "left") return;
@@ -157,6 +178,8 @@ function App() {
       {started && (
         <Game data-testid="jogo">
           <Message>Voltas: {laps}/8</Message>
+          <Message>Turbos: {savedTurbos.current}/3</Message>
+          {usedTurbo && <Message>Turbo ativo!!</Message>}
           <Upcar lane={lane} data-testid="carro"></Upcar>
         </Game>
       )}
