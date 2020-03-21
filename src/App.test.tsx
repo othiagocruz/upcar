@@ -30,7 +30,7 @@ test("Clicar no botão começa o jogo", async () => {
   const jogo = getByTestId("jogo");
   expect(jogo).toBeInTheDocument();
 });
-test("Após início do jogo, ASD e setas movem o carro", async () => {
+test("Após início do jogo, ASD e setas movem o carro e ESC pausa o jogo", async () => {
   const { getByText, getByTestId, debug } = render(<App />);
   const button = getByText(/Iniciar Corrida/i);
 
@@ -55,4 +55,33 @@ test("Após início do jogo, ASD e setas movem o carro", async () => {
     keyCode: 65
   });
   expect(carro).toHaveStyle("left: 10%");
+
+  fireEvent.keyDown(document.body, {
+    key: "ArrowRight",
+    code: "ArrowRight",
+    keyCode: 39
+  });
+  expect(carro).toHaveStyle("left: 41.5%");
+
+  fireEvent.keyDown(document.body, {
+    key: "ArrowRight",
+    code: "ArrowRight",
+    keyCode: 39
+  });
+  expect(carro).toHaveStyle("left: 65%");
+
+  fireEvent.keyDown(document.body, {
+    key: "d",
+    code: "KeyD",
+    keyCode: 83
+  });
+  expect(carro).toHaveStyle("left: 41.5%");
+
+  fireEvent.keyDown(document.body, {
+    key: "Escape",
+    code: "Escape",
+    keyCode: 27
+  });
+  const pausado = await waitForElement(() => getByText("Jogo pausado!"));
+  expect(pausado).toBeInTheDocument();
 });
