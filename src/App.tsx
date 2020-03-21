@@ -10,7 +10,7 @@ export interface IUpcar {
   lane: string;
 }
 
-const Background = styled.div`
+const Game = styled.div`
   width: 100vw;
   height: 100vh;
   background: url(${cenario}) center no-repeat;
@@ -72,7 +72,7 @@ function App() {
   const [starting, setStarting] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
-  const [racetime, setRacetime] = useState<number>(0);
+  const [racetime, setRacetime] = useState<number>(1);
   const [laps, setLaps] = useState<number>(0);
 
   const savedLane = useRef(lane);
@@ -106,11 +106,11 @@ function App() {
   }, [laps]);
 
   useEffect(() => {
-    if (!paused && !finished && racetime % 2 === 1) setLaps(l => l + 1);
+    if (!paused && !finished && racetime % 9 === 0) setLaps(l => l + 1);
   }, [racetime, paused, finished]);
 
-  useKey((pressedKey: number) => {
-    switch (pressedKey) {
+  useKey((pressedKey: number, event: KeyboardEvent) => {
+    switch (event.keyCode) {
       case 27:
         setPaused(p => !p);
         break;
@@ -124,13 +124,13 @@ function App() {
         !savedPaused.current &&
           setLane(savedLane.current === "middle" ? "right" : "middle");
         break;
-      case 97:
+      case 65:
         !savedPaused.current && setLane("left");
         break;
-      case 100:
+      case 68:
         !savedPaused.current && setLane("right");
         break;
-      case 115:
+      case 83:
         !savedPaused.current && setLane("middle");
         break;
 
@@ -155,10 +155,10 @@ function App() {
         </Box>
       )}
       {started && (
-        <Background>
+        <Game data-testid="jogo">
           <Message>Voltas: {laps}/8</Message>
-          <Upcar lane={lane}></Upcar>
-        </Background>
+          <Upcar lane={lane} data-testid="carro"></Upcar>
+        </Game>
       )}
       {paused && started && !finished && (
         <Box>
