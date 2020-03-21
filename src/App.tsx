@@ -3,6 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import useKey from "use-key-hook";
 import upcar from "./carro.png";
 import cenario from "./cenario.gif";
+import { useInterval } from "./hooks";
 import { Theme } from "./theme";
 
 export interface IUpcar {
@@ -16,16 +17,38 @@ const Background = styled.div`
   background-size: cover;
 `;
 
-const Paused = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background: purple;
-  color: white;
-  text-align: center;
-  font-size: 7rem;
+const Box = styled.div`
+  width: calc(100vw - 6rem);
+  height: calc(100vh - 6rem);
+  background: ${props => props.theme.background};
+  color: ${props => props.theme.text};
   display: flex;
+  flex-flow: column wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  align-content: center;
+  padding: 3rem;
+`;
+
+const Message = styled.p`
+  font-size: 3.5rem;
+  display: block;
+  text-align: center;
+`;
+
+const Input = styled.input`
+  font-size: 1.4rem;
+  padding: 1.2rem;
+`;
+
+const Button = styled.button`
+  background: ${props => props.theme.text};
+  color: ${props => props.theme.background};
+  font-size: 1.6rem;
+  border: 0;
+  border-radius: 0.3rem;
+  padding: 1.2rem;
+  cursor: pointer;
 `;
 
 const Upcar = styled.div<IUpcar>`
@@ -42,6 +65,10 @@ const Upcar = styled.div<IUpcar>`
 function App() {
   const [lane, setLane] = useState<string>("middle");
   const [paused, setPaused] = useState<boolean>(false);
+  const [started, setStarted] = useState<boolean>(false);
+  const [starting, setStarting] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(4);
+
   const savedLane = useRef(lane);
   const savedPaused = useRef(paused);
 
@@ -52,6 +79,15 @@ function App() {
   useEffect(() => {
     savedPaused.current = paused;
   }, [paused]);
+
+  useInterval(
+    () => {
+      !started && setCountdown(countdown - 1);
+      if (countdown === 0) setStarted(true);
+    },
+    1000,
+    [starting]
+  );
 
   useKey((pressedKey: number) => {
     switch (pressedKey) {
@@ -84,8 +120,26 @@ function App() {
   });
   return (
     <ThemeProvider theme={Theme}>
-      {paused && <Paused>Jogo pausado!</Paused>}
-      {!paused && (
+      {!started && !starting && (
+        <Box>
+          <Message>Entre com seu nome para começar</Message>
+          <Input type="text" />
+          <Button onClick={() => setStarting(true)}>Iniciar Corrida</Button>
+        </Box>
+      )}
+      {starting && !started && (
+        <Box>
+          <Message>
+            {countdown > 0 && countdown} {countdown === 0 && "Valendo!!"}
+          </Message>
+        </Box>
+      )}
+      {paused && started && (
+        <Box>
+          <Message>Jogo pausado!</Message>
+        </Box>
+      )}
+      {!paused && started && (
         <Background>
           <Upcar lane={lane}></Upcar>
         </Background>
