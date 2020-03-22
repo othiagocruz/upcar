@@ -30,7 +30,8 @@ test("Clicar no botão começa o jogo", async () => {
   const jogo = getByTestId("jogo");
   expect(jogo).toBeInTheDocument();
 });
-test("Após início do jogo, ASD e setas movem o carro e ESC pausa o jogo", async () => {
+
+test("Após início do jogo, ASD e setas movem o carro, ESC pausa o jogo e espaço liga o turbo", async () => {
   const { getByText, getByTestId, debug } = render(<App />);
   const button = getByText(/Iniciar Corrida/i);
 
@@ -46,6 +47,16 @@ test("Após início do jogo, ASD e setas movem o carro e ESC pausa o jogo", asyn
 
   const jogo = getByTestId("jogo");
   expect(jogo).toBeInTheDocument();
+
+  fireEvent.keyDown(document.body, {
+    key: "Space",
+    code: "Space",
+    keyCode: 32
+  });
+  const turbo = await waitForElement(() =>
+    getByText(/Turbo ativo/i, { exact: false })
+  );
+  expect(turbo).toBeInTheDocument();
 
   const carro = getByTestId("carro");
   expect(carro).toHaveStyle("left: 41.5%");

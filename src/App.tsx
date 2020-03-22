@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import styled, { ThemeProvider } from "styled-components";
 import useKey from "use-key-hook";
 import upcar from "./carro.png";
@@ -31,6 +32,28 @@ const Box = styled.div<{ opacity?: string }>`
   align-content: center;
   padding: 3rem;
   position: absolute;
+`;
+
+const Controls = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  position: absolute;
+`;
+const Up = styled.div`
+  width: 100%;
+`;
+
+const Left = styled.div`
+  width: 50%;
+  min-height: 40%;
+`;
+
+const Right = styled.div`
+  width: 50%;
+  min-height: 40%;
 `;
 
 const Message = styled.p`
@@ -177,6 +200,38 @@ function App() {
       )}
       {started && (
         <Game data-testid="jogo">
+          {isMobile && (
+            <Controls>
+              <Up
+                onClick={() => {
+                  if (
+                    savedTurbos.current < 1 ||
+                    savedPaused.current ||
+                    savedTurboActive.current
+                  )
+                    return;
+                  setUsedTurbo(true);
+                  setTimeout(() => setUsedTurbo(false), 3500);
+                }}
+              />
+              <Left
+                onClick={() => {
+                  if (savedLane.current === "left") return;
+                  !savedPaused.current &&
+                    setLane(savedLane.current === "middle" ? "left" : "middle");
+                }}
+              />
+              <Right
+                onClick={() => {
+                  if (savedLane.current === "right") return;
+                  !savedPaused.current &&
+                    setLane(
+                      savedLane.current === "middle" ? "right" : "middle"
+                    );
+                }}
+              />
+            </Controls>
+          )}
           <Message>Voltas: {laps}/8</Message>
           <Message>Turbos: {savedTurbos.current}/3</Message>
           {usedTurbo && <Message>Turbo ativo!!</Message>}
