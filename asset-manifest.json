@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/upcar/static/css/main.3e45ec72.chunk.css",
+    "main.js": "/upcar/static/js/main.e2a59227.chunk.js",
+    "main.js.map": "/upcar/static/js/main.e2a59227.chunk.js.map",
+    "runtime-main.js": "/upcar/static/js/runtime-main.f14bcba4.js",
+    "runtime-main.js.map": "/upcar/static/js/runtime-main.f14bcba4.js.map",
+    "static/js/2.75905c61.chunk.js": "/upcar/static/js/2.75905c61.chunk.js",
+    "static/js/2.75905c61.chunk.js.map": "/upcar/static/js/2.75905c61.chunk.js.map",
+    "index.html": "/upcar/index.html",
+    "precache-manifest.9ef9cdf7acc05998116f6dea4024a480.js": "/upcar/precache-manifest.9ef9cdf7acc05998116f6dea4024a480.js",
+    "service-worker.js": "/upcar/service-worker.js",
+    "static/css/main.3e45ec72.chunk.css.map": "/upcar/static/css/main.3e45ec72.chunk.css.map",
+    "static/js/2.75905c61.chunk.js.LICENSE.txt": "/upcar/static/js/2.75905c61.chunk.js.LICENSE.txt",
+    "static/media/carro.png": "/upcar/static/media/carro.56be0a4e.png",
+    "static/media/cenario.gif": "/upcar/static/media/cenario.d0d2cd17.gif"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f14bcba4.js",
+    "static/js/2.75905c61.chunk.js",
+    "static/css/main.3e45ec72.chunk.css",
+    "static/js/main.e2a59227.chunk.js"
+  ]
+}
