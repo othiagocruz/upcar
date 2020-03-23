@@ -18,7 +18,7 @@ Criei um hook usando o setTimeout para gerenciar os "ticks" do jogo, dando a imp
 
 Com tudo isso resolvido comecei a escrever testes integrados para validar os componentes. Acabei focando mais em demonstrar o uso do RTL com o Jest e não em refatorar meu trabalho inicial e separar os componentes de forma mais organizada para deixar os testes mais claros. Enquanto criava um teste para o uso das teclas determinadas percebi que não estava considerando letras minúsculas, ou seja o jogo só funcionava com capslock ligado. Corrigi isso usando o código do evento fornecido pelo callback do use-key-hook invês do parametro que ele envia. Com os componentes separados apropriadamente ficaria mais fácil de criar outros cenários de teste e tambem mockar a funcionalidade dos ticks.
 
-Finalmente, escolhi o github pages para publicar o projeto usando um repositório público da minha conta.
+Finalmente, escolhi o [github pages para publicar o projeto](https://othiagocruz.github.io/upcar/) usando um repositório público da minha conta.
 
 ## Nice to haves implementados (8/13)
 
